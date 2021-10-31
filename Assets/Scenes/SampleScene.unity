@@ -244,7 +244,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
@@ -358,11 +358,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a018d19f1e9b2f04597983a6ae3d5da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialCells: 1000
+  initialCells: 1
   surfaceRadius: 2
   linkStrength: 0.687
   surfaceStrength: 0.597
-  cellPrefab: {fileID: 1931763700}
+  cellScale: 1.493
+  cellPrefab: {fileID: 1931763705}
   cellParent: {fileID: 765794992}
 --- !u!4 &1197671863
 Transform:
@@ -390,8 +391,10 @@ GameObject:
   - component: {fileID: 1931763703}
   - component: {fileID: 1931763702}
   - component: {fileID: 1931763701}
+  - component: {fileID: 1931763706}
+  - component: {fileID: 1931763705}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: CellObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -471,5 +474,36 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1931763705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931763700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c0b7e71d3ab00b4d96dd31bec3895e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1931763706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931763700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a018d19f1e9b2f04597983a6ae3d5da8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialCells: 10
+  surfaceRadius: 5
+  linkStrength: 1
+  surfaceStrength: 1
+  cellScale: 1
+  cellPrefab: {fileID: 0}
+  cellParent: {fileID: 0}

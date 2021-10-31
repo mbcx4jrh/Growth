@@ -7,6 +7,7 @@ namespace growth {
         public Vector3 position;
         public Vector3 idealPosition;
         public float radius;
+        public CellObject cellObject;
 
         public Cell(Vector3 position, float radius) {
             this.position = position;

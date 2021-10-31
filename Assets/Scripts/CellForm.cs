@@ -35,7 +35,7 @@ namespace growth {
                     float y = Mathf.Sin(A) * Mathf.Sin(B);
                     float z = Mathf.Cos(A);
                     var position = new Vector3(x, y, z) * surfaceRadius;
-                    cells.Add(new Cell(position, d ));
+                    cells.Add(new Cell(position, d));
                     count++;
                 }
             }
