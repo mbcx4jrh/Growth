@@ -183,10 +183,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6910264597445744e8b24d00f46a3c6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  linkLength: 0.57
-  springFactor: 1
-  planarFactor: 0
-  bulgeFactor: 0
+  maxCells: 800
+  linkLength: 0.7
+  springFactor: 3.02
+  planarFactor: 0.064
+  bulgeFactor: 0.151
+  repulsionRange: 1.41
+  repulsionFactor: 0.388
   cellPrefab: {fileID: 6230583904042531781, guid: 700e78b62352260489b0cc76885421d9, type: 3}
   cellsParent: {fileID: 12941552}
   foodSources: []
@@ -216,7 +219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4b3c12e28af76d47812ce0bd96b94ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amount: 0.2
+  amount: 0.188
 --- !u!1 &1692394552
 GameObject:
   m_ObjectHideFlags: 0
