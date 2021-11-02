@@ -23,16 +23,32 @@ namespace growth {
 
         public GameObject cellsParent;
 
-        Cell[] cells;
+        [HideInInspector]
+        public FoodSource[] foodSources;
+
+        [HideInInspector]
+        public Cell[] cells;
 
         private void Start() {
             GenerateInitialCells();
             GenerateGameObjectsForCells();
+            FindFoodSources();
+        }
+
+        private void FindFoodSources() {
+            foodSources = GetComponents<FoodSource>();
         }
 
         private void Update() {
+            FeedCells();
             CalculateForces();
             UpdateCells();
+        }
+
+        private void FeedCells() {
+            foreach(var foodSource in foodSources) {
+                foodSource.Feed(this);
+            }
         }
 
         private void UpdateCells() {
