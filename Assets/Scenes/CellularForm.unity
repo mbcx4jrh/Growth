@@ -183,7 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6910264597445744e8b24d00f46a3c6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxCells: 800
+  maxCells: 1600
   linkLength: 0.7
   springFactor: 3.02
   planarFactor: 0.064
@@ -216,10 +216,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1413894042}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4b3c12e28af76d47812ce0bd96b94ed, type: 3}
+  m_Script: {fileID: 11500000, guid: 7dcf0427d6a85874ebacb0a86954e5c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amount: 0.188
+  amount: 1
+  cellsPerSecond: 1
 --- !u!1 &1692394552
 GameObject:
   m_ObjectHideFlags: 0
