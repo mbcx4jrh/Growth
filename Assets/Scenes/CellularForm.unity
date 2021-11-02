@@ -184,7 +184,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   linkLength: 0.5
   springFactor: 1
-  planarFactor: 0
+  planarFactor: 0.553
   bulgeFactor: 0
   cellPrefab: {fileID: 6230583904042531781, guid: 700e78b62352260489b0cc76885421d9, type: 3}
   cellsParent: {fileID: 12941552}

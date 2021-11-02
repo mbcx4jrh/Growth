@@ -55,7 +55,7 @@ namespace growth {
                     var t = neighbour.position + cell.normal*linkLength;
                     float theta = Vector3.Angle(t - cell.position, vectorBetween)*Mathf.Deg2Rad;
                     d_spring_sum += -cell.position +neighbour.position - vectorBetween.normalized*linkLength;
-                    d_planar_sum += neighbour.position;
+                    d_planar_sum += vectorBetween;
                     d_bulge_sum += Mathf.Sqrt(Mathf.Max(link2 + distance2 - 2 * linkLength * distance * Mathf.Cos(theta)));
                 }
                 var d_spring = linkLength*d_spring_sum / n;
