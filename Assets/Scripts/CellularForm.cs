@@ -6,7 +6,6 @@ using UnityEngine;
 namespace growth {
     public class CellularForm : MonoBehaviour {
 
-        public CellGameObject cellPrefab;
 
         [Range(0.1f,2f)]
         public float linkLength = 1f;
@@ -19,6 +18,10 @@ namespace growth {
 
         [Range(0f, 1f)]
         public float bulgeFactor = 1f;
+
+        public CellGameObject cellPrefab;
+
+        public GameObject cellsParent;
 
         Cell[] cells;
 
@@ -77,6 +80,12 @@ namespace growth {
         private void GenerateGameObjectsForCell(Cell cell) {
             cell.gameObject = Instantiate(cellPrefab, cell.position, Quaternion.identity);
             cell.gameObject.cell = cell;
+            if (cellsParent !=null) {
+                cell.gameObject.transform.parent = cellsParent.transform;
+            }
+            else {
+                cell.gameObject.transform.parent = transform;
+            }
         }
 
         private void GenerateInitialCells() {
