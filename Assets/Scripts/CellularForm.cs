@@ -85,6 +85,7 @@ namespace growth {
             var link2 = linkLength * linkLength;
             var r2 = repulsionRange * repulsionRange;
             foreach (var cell in cells) {
+                cell.NormalFromNeighbours();
                 var d_spring_sum = Vector3.zero;
                 var d_planar_sum = Vector3.zero;
                 var d_bulge_sum = 0f;
