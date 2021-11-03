@@ -6,8 +6,10 @@ namespace growth {
     public class CellGameObject : MonoBehaviour {
 
         public Cell cell;
+        public bool drawGizmos = true;
 
         private void OnDrawGizmos() {
+            if (!drawGizmos) return;
             Gizmos.color = Color.red;
 
             foreach (var n in cell.neighbours) {
@@ -16,6 +18,8 @@ namespace growth {
 
             Gizmos.color = Color.green;
             Gizmos.DrawLine(cell.position, cell.position + cell.normal);
+            //Debug.Log("cp: " + cell.position + " n: " + cell.normal);
+            //Gizmos.DrawSphere(Vector3.zero, 2f);
         }
 
     }

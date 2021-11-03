@@ -83,7 +83,7 @@ namespace growth {
             }
             normal = sum.normalized;
 
-            Debug.Log("Normal " + normal);
+            //Debug.Log("Normal " + normal);
         }
 
     }

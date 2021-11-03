@@ -52,7 +52,7 @@ namespace growth {
             FeedCells();
             CheckForSplits();
             CalculateForces();
-            //UpdateCells();
+            UpdateCells();
         }
 
         private void CheckForSplits() {

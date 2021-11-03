@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace growth {
@@ -8,7 +9,7 @@ namespace growth {
 
         public static float maxDeltaForWelding = 0.01f;
 
-        public static bool weldVertices = false;
+        public static bool weldVertices = true;
 
         public static List<Cell> ImportMesh(Mesh mesh) {
             Vector3[] vertices;
@@ -41,6 +42,11 @@ namespace growth {
                 vertexTriangles[t.c].Add(t);
             }
 
+            //remove dupes
+            //for (int i=0; i< vertexTriangles.Length; i++) {
+            //    vertexTriangles[i] = vertexTriangles[i].Distinct().ToList();
+            //}
+
             //sort triangles at each vertex to ccw
             for (int v = 0; v < vertexTriangles.Length; v++) {
                 var verTris = vertexTriangles[v];
@@ -56,11 +62,11 @@ namespace growth {
                     }
                 }
 
-                Debug.Log("adding " + verTris.Count + " neighbours to cell " + v);
+                //Debug.Log("adding " + verTris.Count + " neighbours to cell " + v);
                 //create neighbours in CCW
                 foreach (var t in verTris) {
                     cells[v].neighbours.Add(cells[t.VertexAfter(v)]);
-                    Debug.Log("n: " + t.VertexAfter(v));
+                    //Debug.Log("n: " + t.VertexAfter(v));
                 }
             }
 
@@ -68,7 +74,8 @@ namespace growth {
                 cell.NormalFromNeighbours();
             }
 
-            Debug.Log("Mesh importer imported " + mesh.vertices.Length + " vertices, of which " + cells.Count + " were unique");
+            Debug.Log("Mesh importer imported " + mesh.vertices.Length + " vertices, of which "
+                        + cells.Count + " were unique and " + mesh.triangles.Length / 3 + " triangles");
             return cells;
         }
 
@@ -79,21 +86,22 @@ namespace growth {
             for (int v = 0; v < mesh.vertices.Length; v++) {
                 bool found = false;
                 for (int nv = 0; nv < newVerts.Count; nv++) {
-                    if ((mesh.vertices[v]-newVerts[nv]).sqrMagnitude < d2) {
+                    if ((mesh.vertices[v] - newVerts[nv]).sqrMagnitude < d2) {
                         //Debug.Log("found " + v + "," + nv);
                         map[v] = nv;
                         found = true;
                         break;
-                    } 
+                    }
                 }
                 if (!found) {
                     //Debug.Log("Added new vertex");
                     newVerts.Add(mesh.vertices[v]);
+                    map[v] = newVerts.Count - 1;
                 }
             }
 
             int[] newTri = new int[mesh.triangles.Length];
-            for (int i=0; i<mesh.triangles.Length; i++) {
+            for (int i = 0; i < mesh.triangles.Length; i++) {
                 newTri[i] = map[mesh.triangles[i]];
             }
             //Debug.Log("Welded " + newVerts.Count + " vertices & " + newTri.Length/3 + " triangles");

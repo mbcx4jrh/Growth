@@ -158,11 +158,11 @@ MonoBehaviour:
   springFactor: 0
   planarFactor: 0
   bulgeFactor: 0
-  repulsionRange: 0
+  repulsionRange: 1.41
   repulsionFactor: 0
   cellPrefab: {fileID: 6230583904042531781, guid: 700e78b62352260489b0cc76885421d9, type: 3}
   cellsParent: {fileID: 0}
-  seedMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  seedMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   foodSources: []
 --- !u!4 &1413894044
 Transform:
