@@ -5,7 +5,6 @@ using UnityEngine;
 namespace growth {
     public abstract class FoodSource : MonoBehaviour {
 
-        public abstract void Feed( CellForm cellForm);
-
+        public abstract void Feed(CellularForm cellularForm);
     }
 }

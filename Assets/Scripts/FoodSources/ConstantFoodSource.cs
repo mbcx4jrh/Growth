@@ -5,12 +5,12 @@ using UnityEngine;
 namespace growth {
     public class ConstantFoodSource : FoodSource {
 
-        [Range(0f,1f)]
-        public float amount = 0.1f;
+        [Range(0f, 1f)]
+        public float amount = 0.2f;
 
-        public override void Feed(CellForm cellForm) {
-            foreach (var cell in cellForm.cells) {
-                cell.food += amount*Time.deltaTime;
+        public override void Feed(CellularForm cellularForm) {
+            foreach (var cell in cellularForm.cells) {
+                cell.food += amount * Time.deltaTime;
             }
         }
     }
