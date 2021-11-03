@@ -38,7 +38,7 @@ namespace growth {
         }
 
         public Cell Split() {
-            Debug.Log("Splitting start");
+            //Debug.Log("Splitting start");
             var daughter = new Cell(position, normal);
             int n = neighbours.Count;
             if (n == 0) return daughter;
@@ -54,7 +54,7 @@ namespace growth {
                 }
             }
             int opposite = (nearest + n/2) % n;
-            Debug.Log("Starting spinning nearest=" + nearest + ", opposite=" + opposite + ", n=" + n);
+            //Debug.Log("Starting spinning nearest=" + nearest + ", opposite=" + opposite + ", n=" + n);
            
             //parent links
             var newLinks = new List<Cell>();
@@ -62,13 +62,13 @@ namespace growth {
                 newLinks.Add(neighbours[i]);
             }
             newLinks.Add(daughter);
-            Debug.Log("Start daughter links");
+           // Debug.Log("Start daughter links");
 
             //daughter links
             daughter.neighbours.Add(neighbours[opposite]);
             for (int i=(opposite+1)%n; i != nearest; i=(i+1)%n) {
                 daughter.neighbours.Add(neighbours[i]);
-                Debug.Log("replacing link " + i);
+                //Debug.Log("replacing link " + i);
                 neighbours[i].ReplaceLink(this, daughter);
             }
             neighbours[nearest].neighbours.Add(daughter);
@@ -78,7 +78,7 @@ namespace growth {
 
             neighbours = newLinks;
             food = 0f;
-            Debug.Log("Splitting end - Parent has "+neighbours.Count+" links, daughter has "+daughter.neighbours.Count);
+           // Debug.Log("Splitting end - Parent has "+neighbours.Count+" links, daughter has "+daughter.neighbours.Count);
             return daughter;
         }
 

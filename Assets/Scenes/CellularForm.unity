@@ -154,15 +154,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxCells: 1600
-  linkLength: 0.7
-  springFactor: 2.19
-  planarFactor: 0.303
-  bulgeFactor: 0.101
-  repulsionRange: 1.82
-  repulsionFactor: 0.343
+  linkLength: 0.45
+  springFactor: 0.14
+  planarFactor: 0.706
+  bulgeFactor: 0
+  repulsionRange: 1.95
+  repulsionFactor: 0.309
   cellPrefab: {fileID: 6230583904042531781, guid: 700e78b62352260489b0cc76885421d9, type: 3}
   cellsParent: {fileID: 0}
-  seedMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  seedMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   foodSources: []
 --- !u!4 &1413894044
 Transform:
@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   amount: 1
-  cellsPerSecond: 0.7
+  cellsPerSecond: 4.7
 --- !u!1 &1692394552
 GameObject:
   m_ObjectHideFlags: 0
