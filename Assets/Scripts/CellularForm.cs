@@ -30,6 +30,8 @@ namespace growth {
 
         public GameObject cellsParent;
 
+        public Mesh seedMesh;
+
         [HideInInspector]
         public FoodSource[] foodSources;
 
@@ -50,7 +52,7 @@ namespace growth {
             FeedCells();
             CheckForSplits();
             CalculateForces();
-            UpdateCells();
+            //UpdateCells();
         }
 
         private void CheckForSplits() {
@@ -143,6 +145,11 @@ namespace growth {
         }
 
         private void GenerateInitialCells() {
+            cells = MeshImporter.ImportMesh(seedMesh);
+        }
+
+
+        private void GenerateIcosphere() {
             cells = new List<Cell>();
             for (int i = 0; i < Icosphere.vertices.Length; i++) {
                 cells.Add(Cell.CellOnSphere(Icosphere.vertices[i]));

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,10 @@ namespace growth {
         public Cell(Vector3 position, Vector3 normal) {
             this.position = position;
             this.normal = normal;
+        }
+
+        public Cell(Vector3 position) {
+            this.position = position;
         }
 
         public static Cell CellOnSphere(Vector3 position) {
@@ -69,6 +74,17 @@ namespace growth {
             return daughter;
         }
 
+        public void NormalFromNeighbours() {
+            var sum = Vector3.zero;
+            for (int i=0; i<neighbours.Count; i++) {
+                var a = neighbours[i].position - position;
+                var b = neighbours[(i + 1) % neighbours.Count].position - position;
+                sum += Vector3.Cross(a, b);
+            }
+            normal = sum.normalized;
+
+            Debug.Log("Normal " + normal);
+        }
 
     }
 }

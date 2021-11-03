@@ -13,6 +13,9 @@ namespace growth {
             foreach (var n in cell.neighbours) {
                 Gizmos.DrawLine(cell.position, n.position);
             }
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(cell.position, cell.position + cell.normal);
         }
 
     }
