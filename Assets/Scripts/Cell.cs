@@ -13,8 +13,6 @@ namespace growth {
 
         public List<Cell> neighbours = new List<Cell>(5);
 
-        public CellGameObject gameObject;
-
         public Cell(Vector3 position, Vector3 normal) {
             this.position = position;
             this.normal = normal;
