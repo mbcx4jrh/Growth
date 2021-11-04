@@ -338,7 +338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minAmount: 0
-  maxAmount: 0.85
+  maxAmount: 0.0133
 --- !u!1 &1519819899
 GameObject:
   m_ObjectHideFlags: 0
