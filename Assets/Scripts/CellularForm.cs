@@ -1,3 +1,4 @@
+using DataStructures.ViliWonka.KDTree;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,6 +38,9 @@ namespace growth {
 
         public Mesh seedMesh;
 
+        [Header("K-D Tree params")]
+        public int maxPointsPerLeaf = 32;
+
         int iterations = 0;
 
         MeshBuilder meshBuilder;
@@ -49,10 +53,14 @@ namespace growth {
         [HideInInspector]
         public List<Cell> cells;
 
+        KDTree cellTree;
+        int lastCellsCount = 0;
+
         private void Start() {
             GenerateInitialCells();
             GenerateMesh();
             FindFoodSources();
+            cellTree = new KDTree(maxPointsPerLeaf);
         }
 
         private void GenerateMesh() {
@@ -68,6 +76,30 @@ namespace growth {
         private void FindFoodSources() {
             foodSources = GetComponents<FoodSource>();
         }
+
+        private void UpdateAndBuildKDTree() {
+            if (cellTree == null) {
+                cellTree = new KDTree(ExtractPoints(0), maxPointsPerLeaf);
+                return;
+            }
+            else {
+                cellTree.Build(ExtractPoints(lastCellsCount), maxPointsPerLeaf);
+                for (int i=0; i< lastCellsCount; i++) {
+                    cellTree.Points[i] = cells[i].position;
+                }
+                cellTree.Rebuild();
+
+            }
+        }
+
+        private Vector3[] ExtractPoints(int startIndex) {
+            Vector3[] points = new Vector3[cells.Count - startIndex];
+            for (int i=0; i<cells.Count; i++) {
+                points[i] = cells[i].position;
+            }
+            return points;
+        }
+
 
         private void Update() {
             if (iterations++ < maxIterations) {
@@ -111,6 +143,9 @@ namespace growth {
 
 
         private void CalculateForces() {
+            UpdateAndBuildKDTree();
+            KDQuery query = new KDQuery();
+            var queryResults = new List<int>();
             var link2 = linkLength * linkLength;
             var r2 = repulsionRange * repulsionRange;
             foreach (var cell in cells) {
@@ -136,7 +171,12 @@ namespace growth {
                 var d_bulge = cell.normal * (d_bulge_sum / n);
 
                 int nearby = cell.neighbours.Count;
-                foreach (var other in cells) {
+
+                queryResults.Clear();
+                query.Radius(cellTree, cell.position, repulsionRange, queryResults); 
+
+                foreach (int i in queryResults) {
+                    var other = cells[i];
                     var between = cell.position - other.position;
                     if (between.sqrMagnitude < r2) {
                         d_collision_sum += between * ((r2 - between.sqrMagnitude) / r2);
