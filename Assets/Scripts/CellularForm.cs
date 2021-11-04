@@ -5,11 +5,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace growth {
+
+    [RequireComponent(typeof(MeshFilter))]
+    [RequireComponent(typeof(MeshRenderer))]
     public class CellularForm : MonoBehaviour {
 
         public int maxCells = 1000;
 
-        public int maxIterations = 1000;
+        public int maxIterations = 100;
 
         [Range(0.1f, 2f)]
         public float linkLength = 1f;
@@ -29,15 +32,16 @@ namespace growth {
         [Range(0f, 1f)]
         public float repulsionFactor = 1f;
 
-        public CellGameObject cellPrefab;
-
-        public GameObject cellsParent;
 
         public Text textBox;
 
         public Mesh seedMesh;
 
         int iterations = 0;
+
+        MeshBuilder meshBuilder;
+        Mesh formMesh;
+        MeshFilter meshFilter;
 
         [HideInInspector]
         public FoodSource[] foodSources;
@@ -47,8 +51,18 @@ namespace growth {
 
         private void Start() {
             GenerateInitialCells();
-            GenerateGameObjectsForCells();
+            GenerateMesh();
             FindFoodSources();
+        }
+
+        private void GenerateMesh() {
+            formMesh = new Mesh();
+            formMesh.name = "Cellular Mesh";
+            formMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            meshBuilder = new MeshBuilder(formMesh);
+            meshFilter = GetComponent<MeshFilter>();
+            if (!meshFilter) Debug.LogWarning("Missing MeshFilter component");
+            UpdateMesh();
         }
 
         private void FindFoodSources() {
@@ -60,13 +74,18 @@ namespace growth {
                 FeedCells();
                 CheckForSplits();
                 CalculateForces();
-                UpdateCells();
+                UpdateMesh();
                 UpdateUI();
             }
         }
 
+        private void UpdateMesh() {
+            formMesh = meshBuilder.BuildMesh(cells);
+            meshFilter.sharedMesh = formMesh;
+        }
+
         private void UpdateUI() {
-            textBox.text = "Iteration: " + iterations;
+            textBox.text = "Iteration: " + iterations + " Cells: "+cells.Count;
         }
 
         private void CheckForSplits() {
@@ -76,7 +95,7 @@ namespace growth {
                 if (cells[i].food >= 1f) {
                     var newCell = cells[i].Split();
                     cells.Add(newCell);
-                    GenerateGameObjectsForCell(newCell);
+                    newCell.index = cells.Count - 1;
                     if (cells.Count == maxCells) Debug.Log("Maximum cells reached (" + maxCells + ")");
                 }
             }
@@ -89,11 +108,7 @@ namespace growth {
             }
         }
 
-        private void UpdateCells() {
-            foreach (var cell in cells) {
-                cell.gameObject.transform.position = cell.position;
-            }
-        }
+
 
         private void CalculateForces() {
             var link2 = linkLength * linkLength;
@@ -135,27 +150,6 @@ namespace growth {
                                                  + bulgeFactor * d_bulge
                                                  + repulsionFactor * d_collision);
 
-            }
-        }
-
-        private void GenerateGameObjectsForCells() {
-            if (!cellPrefab) {
-                Debug.LogWarning("No prefab for cells set");
-                return;
-            }
-            foreach (var cell in cells) {
-                GenerateGameObjectsForCell(cell);
-            }
-        }
-
-        private void GenerateGameObjectsForCell(Cell cell) {
-            cell.gameObject = Instantiate(cellPrefab, cell.position, Quaternion.identity);
-            cell.gameObject.cell = cell;
-            if (cellsParent != null) {
-                cell.gameObject.transform.parent = cellsParent.transform;
-            }
-            else {
-                cell.gameObject.transform.parent = transform;
             }
         }
 
