@@ -25,7 +25,7 @@ namespace growth {
         }
 
         private void OnValidate() {
-            GenerateOneRingN();
+           GenerateOneRingN();
         }
 
         private void GenerateOneRingN() {
@@ -37,11 +37,13 @@ namespace growth {
             var second = new Cell(new Vector3(1f, -1f, 0f));
             var third = new Cell(new Vector3(1f, 0.8f, 0f));
             var fourth = new Cell(new Vector3(-1f, 1f, 0f));
+            var fifth = new Cell(new Vector3(-1f, 0f, 0f));
 
             center.neighbours.Add(first);
             center.neighbours.Add(second);
             center.neighbours.Add(third);
             center.neighbours.Add(fourth);
+            center.neighbours.Add(fifth);
 
             first.neighbours.Add(second);
             first.neighbours.Add(center);
@@ -64,12 +66,19 @@ namespace growth {
             cells.Add(second);
             cells.Add(third);
             cells.Add(fourth);
+            cells.Add(fifth);
             if (split) {
                 var d = center.Split();
-                center.position += new Vector3(-0.2f, 0f, 0f);
-                d.position += new Vector3(0.2f, 0f, 0f);
+                center.position += new Vector3(-0.2f, -0.2f, 0f);
+                d.position += new Vector3(0.2f, 0.2f, 0f);
                 cells.Add(d);
             }
+            for (int i = 0; i < cells.Count; i++) cells[i].index = i;
+
+            //var mf = GetComponent<MeshFilter>();
+            //var mb = new MeshBuilder(new Mesh());
+            //mf.sharedMesh = mb.BuildMesh(cells);
+
         }
 
         private void OnDrawGizmos() {
@@ -79,9 +88,10 @@ namespace growth {
             if (showSecond) DrawGizmos(cells[2]);
             if (showThird) DrawGizmos(cells[3]);
             if (showFourth) DrawGizmos(cells[4]);
+            if (true) DrawGizmos(cells[5]);
             if (showDaughter) {
                 Gizmos.color = Color.green;
-                DrawGizmos(cells[5]); ;
+                DrawGizmos(cells[6]); ;
             }
         }
 

@@ -10,6 +10,7 @@ namespace growth {
         public Vector3 position;
         public Vector3 normal;
         public float food = 0f;
+        public int index;
 
         public List<Cell> neighbours = new List<Cell>(5);
 
@@ -69,15 +70,36 @@ namespace growth {
                 //Debug.Log("replacing link " + i);
                 neighbours[i].ReplaceLink(this, daughter);
             }
-            neighbours[nearest].neighbours.Add(daughter);
-            neighbours[opposite].neighbours.Add(daughter);
+            neighbours[nearest].AddAfter(this, daughter);
+            neighbours[opposite].AddBefore(this, daughter);
             daughter.neighbours.Add(neighbours[nearest]);
             daughter.neighbours.Add(this);
 
             neighbours = newLinks;
+            ComputeNewPosition(this);
+            ComputeNewPosition(daughter);
+
             food -= 1f;
             // Debug.Log("Splitting end - Parent has "+neighbours.Count+" links, daughter has "+daughter.neighbours.Count);
             return daughter;
+        }
+
+        static private void ComputeNewPosition(Cell cell) {
+            var p = cell.position;
+            foreach (var n in cell.neighbours) {
+                p += n.position;
+            }
+            cell.position = p / (cell.neighbours.Count + 1);
+        }
+
+        public void AddAfter(Cell original, Cell newCell) {
+            int i = neighbours.IndexOf(original);
+            neighbours.Insert(i + 1, newCell);
+        }
+
+        public void AddBefore(Cell original, Cell newCell) {
+            int i = neighbours.IndexOf(original);
+            neighbours.Insert(i, newCell);
         }
 
         public void NormalFromNeighbours() {
@@ -89,9 +111,9 @@ namespace growth {
             }
             var newNormal = sum.normalized;
 
-            //if (normal!=null && Vector3.Dot(normal, newNormal) <0) {
-            //    newNormal = -newNormal;
-            //}
+            if (normal!=null && Vector3.Dot(normal, newNormal) <0) {
+                newNormal = -newNormal;
+            }
 
             normal = newNormal;
 

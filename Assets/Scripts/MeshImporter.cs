@@ -30,7 +30,9 @@ namespace growth {
 
             //create cells 
             for (int i = 0; i < vertices.Length; i++) {
-                cells.Add(new Cell(vertices[i]));
+                var cell = new Cell(vertices[i]);
+                cell.index = cells.Count;
+                cells.Add(cell);
                 vertexTriangles[i] = new List<Triangle>();
             }
 

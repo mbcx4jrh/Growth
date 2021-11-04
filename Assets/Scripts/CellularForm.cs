@@ -12,7 +12,7 @@ namespace growth {
 
         public int maxCells = 1000;
 
-        public int maxIterations = 1000;
+        public int maxIterations = 100;
 
         [Range(0.1f, 2f)]
         public float linkLength = 1f;
@@ -38,7 +38,10 @@ namespace growth {
         public Mesh seedMesh;
 
         int iterations = 0;
+
+        MeshBuilder meshBuilder;
         Mesh formMesh;
+        MeshFilter meshFilter;
 
         [HideInInspector]
         public FoodSource[] foodSources;
@@ -53,8 +56,12 @@ namespace growth {
         }
 
         private void GenerateMesh() {
-            Mesh mesh = new Mesh();
-            mesh.name = "Cellular Mesh";
+            formMesh = new Mesh();
+            formMesh.name = "Cellular Mesh";
+            formMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            meshBuilder = new MeshBuilder(formMesh);
+            meshFilter = GetComponent<MeshFilter>();
+            if (!meshFilter) Debug.LogWarning("Missing MeshFilter component");
             UpdateMesh();
         }
 
@@ -73,11 +80,12 @@ namespace growth {
         }
 
         private void UpdateMesh() {
-            throw new NotImplementedException();
+            formMesh = meshBuilder.BuildMesh(cells);
+            meshFilter.sharedMesh = formMesh;
         }
 
         private void UpdateUI() {
-            textBox.text = "Iteration: " + iterations;
+            textBox.text = "Iteration: " + iterations + " Cells: "+cells.Count;
         }
 
         private void CheckForSplits() {
@@ -87,6 +95,7 @@ namespace growth {
                 if (cells[i].food >= 1f) {
                     var newCell = cells[i].Split();
                     cells.Add(newCell);
+                    newCell.index = cells.Count - 1;
                     if (cells.Count == maxCells) Debug.Log("Maximum cells reached (" + maxCells + ")");
                 }
             }
