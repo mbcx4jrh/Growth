@@ -80,6 +80,7 @@ namespace growth {
         private void UpdateAndBuildKDTree() {
             if (cellTree == null) {
                 cellTree = new KDTree(ExtractPoints(0), maxPointsPerLeaf);
+                lastCellsCount = cells.Count;
                 return;
             }
             else {
