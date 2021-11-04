@@ -11,6 +11,7 @@ namespace growth {
         public Vector3 normal;
         public float food = 0f;
         public int index;
+        public Vector3 updatedPosition;
 
         public List<Cell> neighbours = new List<Cell>(5);
 

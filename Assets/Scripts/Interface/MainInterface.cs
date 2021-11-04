@@ -5,6 +5,11 @@ using UnityEngine;
 namespace growth {
     public class MainInterface : MonoBehaviour {
 
+        public CellularForm cellularForm;
+
+        
+        
+
         public void Quit() {
             Application.Quit();
         }

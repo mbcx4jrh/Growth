@@ -2,6 +2,7 @@ using DataStructures.ViliWonka.KDTree;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,11 @@ namespace growth {
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshRenderer))]
     public class CellularForm : MonoBehaviour {
+
+        public bool showMesh = true;
+        //bool savePOVRayFile = false;
+        [Range(1, 8)]
+        public int threads = 1;
 
         public int maxCells = 1000;
 
@@ -84,7 +90,9 @@ namespace growth {
                 return;
             }
             else {
-                cellTree.Build(ExtractPoints(lastCellsCount), maxPointsPerLeaf);
+                if (lastCellsCount != cells.Count) {
+                    cellTree.Build(ExtractPoints(lastCellsCount), maxPointsPerLeaf);
+                }
                 for (int i=0; i< lastCellsCount; i++) {
                     cellTree.Points[i] = cells[i].position;
                 }
@@ -107,7 +115,9 @@ namespace growth {
                 FeedCells();
                 CheckForSplits();
                 CalculateForces();
-                UpdateMesh();
+                if (showMesh) {
+                    UpdateMesh();
+                }
                 UpdateUI();
             }
         }
@@ -145,53 +155,75 @@ namespace growth {
 
         private void CalculateForces() {
             UpdateAndBuildKDTree();
-            KDQuery query = new KDQuery();
-            var queryResults = new List<int>();
             var link2 = linkLength * linkLength;
             var r2 = repulsionRange * repulsionRange;
-            foreach (var cell in cells) {
-                cell.NormalFromNeighbours();
-                var d_spring_sum = Vector3.zero;
-                var d_planar_sum = Vector3.zero;
-                var d_bulge_sum = 0f;
-                var d_collision_sum = Vector3.zero;
-                int n = cell.neighbours.Count;
-                foreach (var neighbour in cell.neighbours) {
-                    var vectorBetween = neighbour.position - cell.position;
-                    var distance2 = vectorBetween.sqrMagnitude;
-                    var distance = vectorBetween.magnitude;
-                    var t = neighbour.position + cell.normal * linkLength;
-                    float theta = Vector3.Angle(t - cell.position, vectorBetween) * Mathf.Deg2Rad;
-                    d_spring_sum += -cell.position + neighbour.position - vectorBetween.normalized * linkLength;
-                    d_planar_sum += vectorBetween;
-                    d_bulge_sum += Mathf.Sqrt(Mathf.Max(link2 + distance2 - 2 * linkLength * distance * Mathf.Cos(theta)));
-                    d_collision_sum += vectorBetween.normalized * ((r2 - distance2) / r2);
+
+            if (threads == 1) {
+                KDQuery query = new KDQuery();
+                var queryResults = new List<int>();
+                foreach (var cell in cells) {
+                    CalculateForcesOnCell(query, queryResults, link2, r2, cell);
+
                 }
-                var d_spring = linkLength * d_spring_sum / n;
-                var d_planar = d_planar_sum / n;
-                var d_bulge = cell.normal * (d_bulge_sum / n);
-
-                int nearby = cell.neighbours.Count;
-
-                queryResults.Clear();
-                query.Radius(cellTree, cell.position, repulsionRange, queryResults); 
-
-                foreach (int i in queryResults) {
-                    var other = cells[i];
-                    var between = cell.position - other.position;
-                    if (between.sqrMagnitude < r2) {
-                        d_collision_sum += between * ((r2 - between.sqrMagnitude) / r2);
-                        nearby += 1;
-                    }
-                }
-                var d_collision = d_collision_sum / nearby;
-                //apply forces
-                cell.position +=  (springFactor * d_spring
-                                                 + planarFactor * d_planar
-                                                 + bulgeFactor * d_bulge
-                                                 + repulsionFactor * d_collision);
-
             }
+            else {
+                int n = cells.Count / threads;
+                Worker[] workers = new Worker[threads];
+                for (int i=0; i< threads; i++) {
+                    workers[i] = new Worker(this, i * n, (i+1) * n, link2, r2);
+                }
+                if (workers[threads - 1].end < cells.Count) workers[threads - 1].end = cells.Count;
+                Parallel.For(0, threads, i => {
+                    workers[i].CalculateForcesOnCells();
+                });
+            }
+            UpdateCellPositions();
+        }
+
+        private void UpdateCellPositions() {
+            foreach (var cell in cells) {
+                cell.position = cell.updatedPosition;
+            }
+        }
+
+        public void CalculateForcesOnCell(KDQuery query, List<int> queryResults, float link2, float r2, Cell cell) {
+            cell.NormalFromNeighbours();
+            var d_spring_sum = Vector3.zero;
+            var d_planar_sum = Vector3.zero;
+            var d_bulge_sum = 0f;
+            var d_collision_sum = Vector3.zero;
+            int n = cell.neighbours.Count;
+            foreach (var neighbour in cell.neighbours) {
+                var vectorBetween = neighbour.position - cell.position;
+                var distance2 = vectorBetween.sqrMagnitude;
+                var distance = vectorBetween.magnitude;
+                var t = neighbour.position + cell.normal * linkLength;
+                float theta = Vector3.Angle(t - cell.position, vectorBetween) * Mathf.Deg2Rad;
+                d_spring_sum += -cell.position + neighbour.position - vectorBetween.normalized * linkLength;
+                d_planar_sum += vectorBetween;
+                d_bulge_sum += Mathf.Sqrt(Mathf.Max(link2 + distance2 - 2 * linkLength * distance * Mathf.Cos(theta)));
+                d_collision_sum += vectorBetween.normalized * ((r2 - distance2) / r2);
+            }
+            var d_spring = linkLength * d_spring_sum / n;
+            var d_planar = d_planar_sum / n;
+            var d_bulge = cell.normal * (d_bulge_sum / n);
+
+            int nearby = cell.neighbours.Count;
+
+            queryResults.Clear();
+            query.Radius(cellTree, cell.position, repulsionRange, queryResults);
+
+            foreach (int i in queryResults) {
+                var other = cells[i];
+                var between = cell.position - other.position;
+                d_collision_sum += between * ((r2 - between.sqrMagnitude) / r2);
+            }
+            var d_collision = d_collision_sum / (queryResults.Count + nearby);
+            //apply forces
+            cell.updatedPosition = cell.position + (springFactor * d_spring
+                                             + planarFactor * d_planar
+                                             + bulgeFactor * d_bulge
+                                             + repulsionFactor * d_collision);
         }
 
         private void GenerateInitialCells() {

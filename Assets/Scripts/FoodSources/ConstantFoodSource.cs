@@ -8,9 +8,21 @@ namespace growth {
         [Range(0f, 1f)]
         public float amount = 0.2f;
 
+        public int iterations = 25;
+
+        int countdown;
+
+        private void Start() {
+            countdown = iterations;
+        }
+
         public override void Feed(CellularForm cellularForm) {
-            foreach (var cell in cellularForm.cells) {
-                cell.food += amount * Time.deltaTime;
+            if (countdown-- <= 1) {
+                foreach (var cell in cellularForm.cells) {
+                    cell.food += amount;
+
+                }
+                countdown = iterations;
             }
         }
     }

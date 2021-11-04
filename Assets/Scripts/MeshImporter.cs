@@ -25,7 +25,7 @@ namespace growth {
                 triangles = mesh.triangles;
             }
 
-            var cells = new List<Cell>(vertices.Length);
+            var cells = new List<Cell>(60000);
             List<Triangle>[] vertexTriangles = new List<Triangle>[vertices.Length];
 
             //create cells 
