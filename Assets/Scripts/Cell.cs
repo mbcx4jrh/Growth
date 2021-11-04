@@ -53,20 +53,20 @@ namespace growth {
                     nearest = i;
                 }
             }
-            int opposite = (nearest + n/2) % n;
+            int opposite = (nearest + n / 2) % n;
             //Debug.Log("Starting spinning nearest=" + nearest + ", opposite=" + opposite + ", n=" + n);
-           
+
             //parent links
             var newLinks = new List<Cell>();
-            for (int i=nearest; i!=(opposite+1)%n; i=(i+1)%n) {
+            for (int i = nearest; i != (opposite + 1) % n; i = (i + 1) % n) {
                 newLinks.Add(neighbours[i]);
             }
             newLinks.Add(daughter);
-           // Debug.Log("Start daughter links");
+            // Debug.Log("Start daughter links");
 
             //daughter links
             daughter.neighbours.Add(neighbours[opposite]);
-            for (int i=(opposite+1)%n; i != nearest; i=(i+1)%n) {
+            for (int i = (opposite + 1) % n; i != nearest; i = (i + 1) % n) {
                 daughter.neighbours.Add(neighbours[i]);
                 //Debug.Log("replacing link " + i);
                 neighbours[i].ReplaceLink(this, daughter);
@@ -77,21 +77,27 @@ namespace growth {
             daughter.neighbours.Add(this);
 
             neighbours = newLinks;
-            food = 0f;
-           // Debug.Log("Splitting end - Parent has "+neighbours.Count+" links, daughter has "+daughter.neighbours.Count);
+            food -= 1f;
+            // Debug.Log("Splitting end - Parent has "+neighbours.Count+" links, daughter has "+daughter.neighbours.Count);
             return daughter;
         }
 
         public void NormalFromNeighbours() {
             var sum = Vector3.zero;
-            for (int i=0; i<neighbours.Count; i++) {
+            for (int i = 0; i < neighbours.Count; i++) {
                 var a = neighbours[i].position - position;
                 var b = neighbours[(i + 1) % neighbours.Count].position - position;
                 sum += Vector3.Cross(a, b);
             }
-            normal = sum.normalized;
+            var newNormal = sum.normalized;
 
-            //Debug.Log("Normal " + normal);
+            //if (normal!=null && Vector3.Dot(normal, newNormal) <0) {
+            //    newNormal = -newNormal;
+            //}
+
+            normal = newNormal;
+
+
         }
 
     }

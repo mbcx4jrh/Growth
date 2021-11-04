@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace growth {
     public class CellularForm : MonoBehaviour {
 
         public int maxCells = 1000;
+
+        public int maxIterations = 1000;
 
         [Range(0.1f, 2f)]
         public float linkLength = 1f;
@@ -30,7 +33,11 @@ namespace growth {
 
         public GameObject cellsParent;
 
+        public Text textBox;
+
         public Mesh seedMesh;
+
+        int iterations = 0;
 
         [HideInInspector]
         public FoodSource[] foodSources;
@@ -49,10 +56,17 @@ namespace growth {
         }
 
         private void Update() {
-            FeedCells();
-            CheckForSplits();
-            CalculateForces();
-            UpdateCells();
+            if (iterations++ < maxIterations) {
+                FeedCells();
+                CheckForSplits();
+                CalculateForces();
+                UpdateCells();
+                UpdateUI();
+            }
+        }
+
+        private void UpdateUI() {
+            textBox.text = "Iteration: " + iterations;
         }
 
         private void CheckForSplits() {
@@ -116,7 +130,7 @@ namespace growth {
                 }
                 var d_collision = d_collision_sum / nearby;
                 //apply forces
-                cell.position += Time.deltaTime * (springFactor * d_spring
+                cell.position +=  (springFactor * d_spring
                                                  + planarFactor * d_planar
                                                  + bulgeFactor * d_bulge
                                                  + repulsionFactor * d_collision);
