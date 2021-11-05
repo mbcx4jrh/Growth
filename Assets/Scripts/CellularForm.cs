@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,9 @@ namespace growth {
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshRenderer))]
     public class CellularForm : MonoBehaviour {
+
+        static readonly ProfilerMarker s_SimulatePerfMarker = new ProfilerMarker(ProfilerCategory.Ai, "CellularForm.KDQuery");
+
 
         public bool showMesh = true;
         //bool savePOVRayFile = false;
@@ -219,7 +223,10 @@ namespace growth {
                 float theta = Vector3.Angle(t - cell.position, vectorBetween) * Mathf.Deg2Rad;
                 d_spring_sum += -cell.position + neighbour.position - vectorBetween.normalized * linkLength;
                 d_planar_sum += vectorBetween;
-                d_bulge_sum += Mathf.Sqrt(Mathf.Max(link2 + distance2 - 2 * linkLength * distance * Mathf.Cos(theta)));
+                if (distance2 < link2) {
+                    var dot = Vector3.Dot(vectorBetween, cell.normal);
+                    d_bulge_sum += Mathf.Sqrt(link2-distance2+dot*dot)+dot;
+                }
                 d_collision_sum += vectorBetween.normalized * ((r2 - distance2) / r2);
             }
             var d_spring = linkLength * d_spring_sum / n;
@@ -228,13 +235,16 @@ namespace growth {
 
             int nearby = cell.neighbours.Count;
 
-            queryResults.Clear();
-            query.Radius(cellTree, cell.position, repulsionRange, queryResults);
+            using (s_SimulatePerfMarker.Auto()) {
+                queryResults.Clear();
+                query.Radius(cellTree, cell.position, repulsionRange, queryResults);
 
-            foreach (int i in queryResults) {
-                var other = cells[i];
-                var between = cell.position - other.position;
-                d_collision_sum += between * ((r2 - between.sqrMagnitude) / r2);
+                foreach (int i in queryResults) {
+                    var other = cells[i];
+                    var between = cell.position - other.position;
+                    d_collision_sum += between * ((r2 - between.sqrMagnitude) / r2);
+                }
+
             }
             var d_collision = d_collision_sum / (queryResults.Count + nearby);
             //apply forces
