@@ -113,7 +113,7 @@ namespace growth {
 
 
         private void Update() {
-            if (iterations++ < maxIterations) {
+            if (iterations++ < maxIterations && cells.Count < maxCells) {
                 FeedCells();
                 CheckForSplits();
                 CalculateForces();
@@ -123,7 +123,7 @@ namespace growth {
                 UpdateUI();
             }
             else if (writeFile) {
-                FileWriter.WritePOVRaySpheres(cells, linkLength*1.5f);
+                FileWriter.WritePOVRaySpheres(cells, linkLength*0.3f);
                 writeFile = false;
             }
         }
