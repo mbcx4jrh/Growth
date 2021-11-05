@@ -19,7 +19,7 @@ namespace growth {
 
         public int maxCells = 1000;
 
-        public int maxIterations = 100;
+        public int iterationsPastMaxCells = 20;
 
         [Range(0.1f, 2f)]
         public float linkLength = 1f;
@@ -65,10 +65,15 @@ namespace growth {
         bool writeFile = true;
 
         private void Start() {
+            InitialiseDataStructures();
             GenerateInitialCells();
             GenerateMesh();
             FindFoodSources();
             cellTree = new KDTree(maxPointsPerLeaf);
+        }
+
+        private void InitialiseDataStructures() {
+            cells = new List<Cell>(maxCells);
         }
 
         private void GenerateMesh() {
@@ -92,13 +97,14 @@ namespace growth {
                 return;
             }
             else {
-                if (lastCellsCount != cells.Count) {
-                    cellTree.Build(ExtractPoints(lastCellsCount), maxPointsPerLeaf);
-                }
+
                 for (int i=0; i< lastCellsCount; i++) {
                     cellTree.Points[i] = cells[i].position;
                 }
-                cellTree.Rebuild();
+                cellTree.Rebuild(maxPointsPerLeaf);
+                if (lastCellsCount != cells.Count) {
+                    cellTree.Build(ExtractPoints(lastCellsCount), maxPointsPerLeaf);
+                }
 
             }
         }
@@ -113,7 +119,8 @@ namespace growth {
 
 
         private void Update() {
-            if (iterations++ < maxIterations && cells.Count < maxCells) {
+            if (cells.Count < maxCells|| iterationsPastMaxCells-- >0) {
+                iterations++;
                 FeedCells();
                 CheckForSplits();
                 CalculateForces();
@@ -124,6 +131,7 @@ namespace growth {
             }
             else if (writeFile) {
                 FileWriter.WritePOVRaySpheres(cells, linkLength*0.3f);
+                FileWriter.WritePOVRaySpheresWithCut(cells, linkLength * 0.3f, new Plane(Vector3.forward, Vector3.zero));
                 writeFile = false;
             }
         }
@@ -147,6 +155,8 @@ namespace growth {
                     newCell.index = cells.Count - 1;
                     if (cells.Count == maxCells) {
                         Debug.Log("Maximum cells reached (" + maxCells + ")");
+                        writeFile = true;
+                        break;
                     }
                 }
             }
@@ -235,20 +245,8 @@ namespace growth {
         }
 
         private void GenerateInitialCells() {
-            cells = MeshImporter.ImportMesh(seedMesh);
+            cells = MeshImporter.ImportMesh(seedMesh, cells);
         }
 
-
-        private void GenerateIcosphere() {
-            cells = new List<Cell>();
-            for (int i = 0; i < Icosphere.vertices.Length; i++) {
-                cells.Add(Cell.CellOnSphere(Icosphere.vertices[i]));
-            }
-            for (int i = 0; i < 12; i++) {
-                for (int j = 0; j < 5; j++) {
-                    cells[i].neighbours.Add(cells[Icosphere.edges[i, j]]);
-                }
-            }
-        }
     }
 }

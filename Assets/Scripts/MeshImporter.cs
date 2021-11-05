@@ -11,7 +11,7 @@ namespace growth {
 
         public static bool weldVertices = true;
 
-        public static List<Cell> ImportMesh(Mesh mesh) {
+        public static List<Cell> ImportMesh(Mesh mesh, List<Cell> cells) {
             Vector3[] vertices;
             int[] triangles;
 
@@ -25,7 +25,7 @@ namespace growth {
                 triangles = mesh.triangles;
             }
 
-            var cells = new List<Cell>(60000);
+            cells.Clear();
             List<Triangle>[] vertexTriangles = new List<Triangle>[vertices.Length];
 
             //create cells 

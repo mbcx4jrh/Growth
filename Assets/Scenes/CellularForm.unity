@@ -492,6 +492,7 @@ GameObject:
   - component: {fileID: 1413894043}
   - component: {fileID: 1413894047}
   - component: {fileID: 1413894046}
+  - component: {fileID: 1413894048}
   - component: {fileID: 1413894045}
   m_Layer: 0
   m_Name: CellularForm
@@ -513,18 +514,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showMesh: 1
-  threads: 4
-  maxCells: 2000000
-  maxIterations: 324
+  threads: 6
+  maxCells: 40000
+  iterationsPastMaxCells: 20
   linkLength: 0.54
-  springFactor: 0.4
-  planarFactor: 0.681
-  bulgeFactor: 0
-  repulsionRange: 0.82
-  repulsionFactor: 0.654
+  springFactor: 0.17
+  planarFactor: 0.555
+  bulgeFactor: 0.001
+  repulsionRange: 0.52
+  repulsionFactor: 0.833
   textBox: {fileID: 820702309}
   seedMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  maxPointsPerLeaf: 32
+  maxPointsPerLeaf: 16
   foodSources: []
 --- !u!4 &1413894044
 Transform:
@@ -549,11 +550,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1413894042}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4b3c12e28af76d47812ce0bd96b94ed, type: 3}
+  m_Script: {fileID: 11500000, guid: a4a390d9523cafc4dabfabe1953db3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amount: 1
-  iterations: 25
+  minAmount: 0
+  maxAmount: 0.0373
 --- !u!23 &1413894046
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -603,6 +604,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1413894042}
   m_Mesh: {fileID: 0}
+--- !u!114 &1413894048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413894042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4b3c12e28af76d47812ce0bd96b94ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  amount: 0.927
+  iterations: 25
 --- !u!1 &1519819899
 GameObject:
   m_ObjectHideFlags: 0

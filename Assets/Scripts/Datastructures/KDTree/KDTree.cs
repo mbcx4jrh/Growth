@@ -23,7 +23,7 @@ SOFTWARE.
 
 // change to !KDTREE_DUPLICATES
 // if you know for sure you will not use duplicate coordinates (all unique)
-#define KDTREE_DUPLICATES
+#define nKDTREE_DUPLICATES
 
 using System.Collections;
 using System.Collections.Generic;
