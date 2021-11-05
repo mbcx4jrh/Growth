@@ -62,6 +62,8 @@ namespace growth {
         KDTree cellTree;
         int lastCellsCount = 0;
 
+        bool writeFile = true;
+
         private void Start() {
             GenerateInitialCells();
             GenerateMesh();
@@ -120,6 +122,10 @@ namespace growth {
                 }
                 UpdateUI();
             }
+            else if (writeFile) {
+                FileWriter.WritePOVRaySpheres(cells, linkLength*1.5f);
+                writeFile = false;
+            }
         }
 
         private void UpdateMesh() {
@@ -139,7 +145,9 @@ namespace growth {
                     var newCell = cells[i].Split();
                     cells.Add(newCell);
                     newCell.index = cells.Count - 1;
-                    if (cells.Count == maxCells) Debug.Log("Maximum cells reached (" + maxCells + ")");
+                    if (cells.Count == maxCells) {
+                        Debug.Log("Maximum cells reached (" + maxCells + ")");
+                    }
                 }
             }
         }

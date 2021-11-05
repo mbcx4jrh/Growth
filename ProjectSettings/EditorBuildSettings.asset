@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Static Test.unity
+    path: Assets/Scenes/CellularForm.unity
     guid: e296a091a1b53994d8f2bcf58c1f5bcf
   m_configObjects: {}

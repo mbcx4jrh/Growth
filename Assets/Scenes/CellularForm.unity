@@ -513,10 +513,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showMesh: 1
-  threads: 1
-  maxCells: 200000
-  maxIterations: 200
-  linkLength: 0.5
+  threads: 4
+  maxCells: 2000000
+  maxIterations: 324
+  linkLength: 0.54
   springFactor: 0.4
   planarFactor: 0.681
   bulgeFactor: 0
