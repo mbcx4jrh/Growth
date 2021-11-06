@@ -513,16 +513,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6910264597445744e8b24d00f46a3c6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showMesh: 1
-  threads: 6
-  maxCells: 40000
-  iterationsPastMaxCells: 20
+  showMesh: 0
+  threads: 1
+  maxCells: 10000000
+  iterationsPastMaxCells: 5
   linkLength: 0.54
-  springFactor: 0.17
-  planarFactor: 0.555
-  bulgeFactor: 0.001
-  repulsionRange: 0.52
-  repulsionFactor: 0.833
+  springFactor: 1.18
+  planarFactor: 0.749
+  bulgeFactor: 0.1
+  repulsionRange: 0.58
+  repulsionFactor: 0.82
   textBox: {fileID: 820702309}
   seedMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   maxPointsPerLeaf: 16
@@ -554,7 +554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minAmount: 0
-  maxAmount: 0.0373
+  maxAmount: 0.056
 --- !u!23 &1413894046
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -616,7 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4b3c12e28af76d47812ce0bd96b94ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amount: 0.927
+  amount: 0.587
   iterations: 25
 --- !u!1 &1519819899
 GameObject:
