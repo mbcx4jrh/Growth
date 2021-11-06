@@ -21,14 +21,14 @@ namespace growth {
         [Range(1, 8)]
         public int threads = 1;
 
-        public int maxCells = 1000;
+        public int maxCells = 10000;
 
         public int iterationsPastMaxCells = 20;
 
-        [Range(0.1f, 2f)]
+        [Range(0.1f, 1f)]
         public float linkLength = 1f;
 
-        [Range(0f, 5f)]
+        [Range(0f, 1f)]
         public float springFactor = 1f;
 
         [Range(0f, 1f)]
@@ -37,7 +37,7 @@ namespace growth {
         [Range(0f, 1f)]
         public float bulgeFactor = 1f;
 
-        [Range(0f, 10f)]
+        [Range(0f, 3f)]
         public float repulsionRange = 2f;
 
         [Range(0f, 1f)]
@@ -68,16 +68,41 @@ namespace growth {
 
         bool writeFile = true;
 
-        private void Start() {
+        bool running = false;
+        bool initialised = false;
+
+        public void Run() {
+            if (running) return;
+            if (!initialised) Initialise();
+            running = true;
+        }
+
+        public void Pause() {
+            running = false;
+        }
+
+        public void Restart() {
+            running = false;
+            Initialise();
+        }
+
+        private void Initialise() {
             InitialiseDataStructures();
             GenerateInitialCells();
             GenerateMesh();
             FindFoodSources();
-            cellTree = new KDTree(maxPointsPerLeaf);
+            lastCellsCount = 0;
+            iterations = 0;
+            initialised = true;
+        }
+
+        private void Start() {
+
         }
 
         private void InitialiseDataStructures() {
             cells = new List<Cell>(maxCells);
+            cellTree = new KDTree(maxPointsPerLeaf);
         }
 
         private void GenerateMesh() {
@@ -123,6 +148,13 @@ namespace growth {
 
 
         private void Update() {
+            if (running) {
+                NewIteration();
+            }
+        }
+
+
+        public void NewIteration() { 
             if (cells.Count < maxCells|| iterationsPastMaxCells-- >0) {
                 iterations++;
                 FeedCells();
@@ -146,7 +178,7 @@ namespace growth {
         }
 
         private void UpdateUI() {
-            textBox.text = "Iteration: " + iterations + " Cells: "+cells.Count;
+            textBox.text = "Iteration: " + iterations + Environment.NewLine+" Cells: "+cells.Count;
         }
 
         private void CheckForSplits() {

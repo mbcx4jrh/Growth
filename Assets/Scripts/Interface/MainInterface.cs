@@ -12,6 +12,10 @@ namespace growth {
             Application.Quit();
         }
 
+        public void MainMenu() {
+            SceneManager.LoadScene("MainMenu");
+        }
+
         public void InvestigateForm() {
             SceneManager.LoadScene("InvestigateForm");
         }
